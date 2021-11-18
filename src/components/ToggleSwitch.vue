@@ -2,7 +2,11 @@
   <div
     @click="toggle"
     class="toggle"
-    :class="{ 'toggle-off': !state.isOn, 'toggle-on': state.isOn, 'toggle-disabled': disabled }"
+    :class="{
+      'toggle-off': !state.isOn,
+      'toggle-on': state.isOn,
+      'toggle-disabled': disabled
+    }"
     v-b-tooltip.hover.left
     :title="tooltip"
   >
@@ -82,5 +86,19 @@ export default {
 .toggle-switch-on {
   transform: translateX(24px);
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+.small-toggle {
+  width: 30px;
+  height: 18px;
+
+  .toggle-switch {
+    height: 14px;
+    width: 14px;
+    margin: 1px;
+  }
+  .toggle-switch-on {
+    transform: translateX(12px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
 }
 </style>

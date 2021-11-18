@@ -11,11 +11,30 @@
         class="installed-app-icon app-icon"
         :alt="name"
         :src="`https://getumbrel.github.io/umbrel-apps-gallery/${id}/icon.svg`"
-    />
+      />
     </a>
-    <span v-if="isUninstalling" class="text-center text-small text-muted text-truncate mb-1">Uninstalling...</span>
-    <span v-else-if="isOffline" class="text-center text-small text-muted text-truncate mb-1">Starting...</span>
+    <span
+      v-if="isUninstalling"
+      class="text-center text-small text-muted text-truncate mb-1"
+      >Uninstalling...</span
+    >
+    <span
+      v-else-if="isOffline"
+      class="text-center text-small text-muted text-truncate mb-1"
+      >Starting...</span
+    >
     <span v-else class="text-center text-truncate mb-1">{{ name }}</span>
+    <span
+        class="toggle-tor text-center"
+        v-if="showTorToggle && !isUninstalling"
+    >
+
+        Tor
+        <toggle-switch
+            class="align-self-center small-toggle"
+            tooltip="Toggle remote access via Tor"
+        >
+        </toggle-switch> </span>
     <b-button
       class="uninstall-btn"
       v-if="showUninstallButton && !isUninstalling"
@@ -31,6 +50,7 @@
 import { mapState } from "vuex";
 
 import delay from "@/helpers/delay";
+import ToggleSwitch from "@/components/ToggleSwitch";
 
 export default {
   props: {
@@ -41,16 +61,20 @@ export default {
     path: String,
     showUninstallButton: {
       type: Boolean,
-      default: false,
+      default: false
+    },
+    showTorToggle: {
+      type: Boolean,
+      default: false
     },
     isUninstalling: {
       type: Boolean,
-      default: false,
+      default: false
     },
     torOnly: {
       type: Boolean,
-      default: false,
-    },
+      default: false
+    }
   },
   data() {
     return {
@@ -60,9 +84,9 @@ export default {
   },
   computed: {
     ...mapState({
-      installedApps: (state) => state.apps.installed,
+      installedApps: state => state.apps.installed
     }),
-    url: function () {
+    url: function() {
       if (window.location.origin.indexOf(".onion") > 0) {
         return `http://${this.hiddenService}${this.path}`;
       } else {
@@ -87,7 +111,9 @@ export default {
     openApp(event) {
       if (this.torOnly && window.location.origin.indexOf(".onion") < 0) {
         event.preventDefault();
-        alert(`${this.name} can only be used over Tor. Please access your Umbrel in a Tor browser on your remote access URL (Settings > Tor > Remote Access URL) to open this app.`);
+        alert(
+          `${this.name} can only be used over Tor. Please access your Umbrel in a Tor browser on your remote access URL (Settings > Tor > Remote Access URL) to open this app.`
+        );
         return;
       }
       if (this.isUninstalling || this.isOffline) {
@@ -100,7 +126,7 @@ export default {
       this.checkIfAppIsOffline = true;
       while (this.checkIfAppIsOffline) {
         try {
-          await window.fetch(this.url, {mode: "no-cors" });
+          await window.fetch(this.url, { mode: "no-cors" });
           this.isOffline = false;
           this.checkIfAppIsOffline = false;
         } catch (error) {
@@ -116,7 +142,7 @@ export default {
   beforeDestroy() {
     this.checkIfAppIsOffline = false;
   },
-  components: {},
+  components: { ToggleSwitch }
 };
 </script>
 
@@ -133,6 +159,9 @@ export default {
   .uninstall-btn {
     position: absolute;
     bottom: 0;
+  }
+  .toggle-tor{
+    padding: 10px;
   }
 }
 </style>

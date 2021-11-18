@@ -22,6 +22,7 @@
           :hiddenService="app.hiddenService"
           :torOnly="app.torOnly"
           :showUninstallButton="isEditing"
+          :showTorToggle="isEditing"
           :isUninstalling="uninstallingApps.includes(app.id)"
         >
         </installed-app>
